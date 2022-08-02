@@ -3,10 +3,12 @@ import 'package:bmi_calculator/spacings.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    home: MyApp(),
-    debugShowCheckedModeBanner: false,
-  ));
+  runApp(
+    const MaterialApp(
+      home: MyApp(),
+      debugShowCheckedModeBanner: false,
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -21,6 +23,25 @@ class _MyAppState extends State<MyApp> {
   TextEditingController weightController = TextEditingController();
   String? result = '';
   String? remark = '';
+
+  _calculateBmi(){
+    setState(() {
+                      double? weight = double.tryParse(weightController.text);
+                      double? height =
+                          double.tryParse(heightController.text)! * 0.305;
+                      var bmi = (weight! / (pow(height, 2)));
+                      if (bmi < 18.5) {
+                        remark = "You're underweight";
+                      } else if (bmi <= 24.9) {
+                        remark = "Your body is normal";
+                      } else if (bmi <= 29.9) {
+                        remark = "You're overweight";
+                      } else {
+                        remark = "You're obese";
+                      }
+                      result = bmi.toStringAsFixed(2);
+                    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +95,8 @@ class _MyAppState extends State<MyApp> {
                       hintText: "Enter your height(ft)",
                       hintStyle: const TextStyle(color: Colors.white),
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
                   ),
                   addVerticalSpace(30),
                   TextField(
@@ -85,7 +107,8 @@ class _MyAppState extends State<MyApp> {
                       ),
                       hintText: "Enter your weight(kg)",
                     ),
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
                   ),
                 ],
               ),
@@ -99,22 +122,7 @@ class _MyAppState extends State<MyApp> {
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.amber)),
                   onPressed: () {
-                    setState(() {
-                      double? weight = double.tryParse(weightController.text);
-                      double? height =
-                          double.tryParse(heightController.text)! * 0.305;
-                      var bmi = (weight! / (pow(height, 2)));
-                      if (bmi < 18.5) {
-                        remark = "You're underweight";
-                      } else if (bmi <= 24.9) {
-                        remark = "Your body is normal";
-                      } else if (bmi <= 29.9) {
-                        remark = "You're overweight";
-                      } else {
-                        remark = "You're obese";
-                      }
-                      result = bmi.toStringAsFixed(2);
-                    });
+                    _calculateBmi();
                   },
                   child: const Text(
                     "Calculate BMI",
