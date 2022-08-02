@@ -24,23 +24,22 @@ class _MyAppState extends State<MyApp> {
   String? result = '';
   String? remark = '';
 
-  _calculateBmi(){
+  _calculateBmi() {
     setState(() {
-                      double? weight = double.tryParse(weightController.text);
-                      double? height =
-                          double.tryParse(heightController.text)! * 0.305;
-                      var bmi = (weight! / (pow(height, 2)));
-                      if (bmi < 18.5) {
-                        remark = "You're underweight";
-                      } else if (bmi <= 24.9) {
-                        remark = "Your body is normal";
-                      } else if (bmi <= 29.9) {
-                        remark = "You're overweight";
-                      } else {
-                        remark = "You're obese";
-                      }
-                      result = bmi.toStringAsFixed(2);
-                    });
+      double? weight = double.tryParse(weightController.text);
+      double? height = double.tryParse(heightController.text)! * 0.305;
+      var bmi = (weight! / (pow(height, 2)));
+      if (bmi < 18.5) {
+        remark = "You're underweight";
+      } else if (bmi <= 24.9) {
+        remark = "Your body is normal";
+      } else if (bmi <= 29.9) {
+        remark = "You're overweight";
+      } else {
+        remark = "You're obese";
+      }
+      result = bmi.toStringAsFixed(2);
+    });
   }
 
   @override
