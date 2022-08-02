@@ -1,8 +1,11 @@
+import 'dart:math';
+import 'package:bmi_calculator/spacings.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MaterialApp(
     home: MyApp(),
+    debugShowCheckedModeBanner: false,
   ));
 }
 
@@ -14,75 +17,117 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  TextEditingController _resultController = TextEditingController();
-  TextEditingController _ageController = TextEditingController();
-  TextEditingController _heightController = TextEditingController();
-  TextEditingController _weightController = TextEditingController();
+  TextEditingController heightController = TextEditingController();
+  TextEditingController weightController = TextEditingController();
+  String? result = '';
+  String? remark = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
       appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.black,
         title: const Text(
           "BMI Calculator",
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: TextField(
-              controller: _resultController,
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(15.0),
-            child: Divider(),
-          ),
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                Text("What's your age?"),
-                TextField(
-                  controller: _ageController,
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(15.0),
-          ),
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(40),
+              child: Center(
+                child: Column(
                   children: [
-                    Text("What's your height(Ft)"),
-                    TextField(controller: _heightController),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text("What's your weight(Kg)"),
-                    TextField(
-                      controller: _weightController,
+                    Text(
+                      "$result",
+                      style: const TextStyle(
+                        fontSize: 39,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
+                    Text(
+                      "$remark",
+                      style: const TextStyle(fontSize: 18),
+                    )
                   ],
-                )
-              ],
+                ),
+              ),
             ),
-          ),
-          const ElevatedButton(
-            // style: ElevatedButton.styleFrom()
-            onPressed: null,
-            child: Text("Calculate Your BMI"),
-          )
-        ],
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: heightController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          style: BorderStyle.solid,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      hintText: "Enter your height(ft)",
+                      hintStyle: const TextStyle(color: Colors.white),
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  ),
+                  addVerticalSpace(30),
+                  TextField(
+                    controller: weightController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      hintText: "Enter your weight(kg)",
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: SizedBox(
+                height: 50,
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.amber)),
+                  onPressed: () {
+                    setState(() {
+                      double? weight = double.tryParse(weightController.text);
+                      double? height =
+                          double.tryParse(heightController.text)! * 0.305;
+                      var bmi = (weight! / (pow(height, 2)));
+                      if (bmi < 18.5) {
+                        remark = "You're underweight";
+                      } else if (bmi <= 24.9) {
+                        remark = "Your body is normal";
+                      } else if (bmi <= 29.9) {
+                        remark = "You're overweight";
+                      } else {
+                        remark = "You're obese";
+                      }
+                      result = bmi.toStringAsFixed(2);
+                    });
+                  },
+                  child: const Text(
+                    "Calculate BMI",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
